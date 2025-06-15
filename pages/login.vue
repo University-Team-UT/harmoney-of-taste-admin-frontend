@@ -12,7 +12,7 @@ definePageMeta({
 		<div
 			class="bg-slate-100 flex flex-col items-center justify-center rounded-lg p-10 gap-3"
 		>
-			<NuxtImg src="/logo_svg.svg" width="30" height="30" class="size-16" />
+			<NuxtImg src="/logo.png" width="30" height="30" class="size-16" />
 			<h1 class="text-2xl font-semibold">Вход в админ панель</h1>
 			<LoginForm />
 		</div>

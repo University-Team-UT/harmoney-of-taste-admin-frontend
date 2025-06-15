@@ -1,40 +1,23 @@
 export const API_ROUTES = {
-	HOST: 'http://localhost:4200',
-	BASE_URL: 'http://localhost:4200/api',
-	GET_ALL_ADMINISTRATORS: '/administrators',
+	HOST: 'http://localhost:4202',
+	BASE_URL: 'http://localhost:4202',
 	MEDIA: '/media',
 	AUTH: {
-		LOGIN: '/authorization/sign-in',
-		REGISTER: '/authorization/sign-up',
-		VERIFY: '/verification',
-		EDIT_PROFILE: (id: string) => `authorization/edit-profile/${id}`,
-		DELETE_BY_ID: (id: string) => `authorization/delete/${id}`,
+		LOGIN: '/auth/login-admin',
+		EDIT_PROFILE: (id: string) => `auth/edit/${id}`,
 	},
-	BANNER: {
-		INDEX: '/banner',
-		GET_BANNERS: '/banner/get-all',
-		CREATE_BANNER: '/banner/create-banner',
-		UPDATE_BANNER: '/banner/update-banner',
-		DELETE_BANNER: (id: string) => `/banner/delete-banner/${id}`,
-		UPDATE_POSITION: '/banner/update-position',
+	PRODUCT_MANAGEMENT: {
+		CREATE_BANNER: '/product-management/create',
+		UPDATE_BANNER: (id: string) => `/product-management/update/${id}`,
+		DELETE_BANNER: (id: string) => `/product-management/delete/${id}`,
 	},
-	EVENTS: {
-		INDEX: '/events',
-		GET_BY_ID: (id: string) => `/events/get-by-id/${id}`,
-		CREATE_EVENT: '/events/create-event',
-		UPDATE_EVENT: (id: string) => `/events/update-event/${id}`,
-		DELETE_EVENT: (id: string) => `/events/delete-event/${id}`,
+	ORDER_MANAGEMENT: {
+		GET: `/orders-management`,
+		UPDATE: `/orders-management`,
 	},
-	PRODUCTS: {
-		INDEX: '/products',
-		CREATE_PRODUCT: '/products/create-product',
-		UPDATE_PRODUCT: (id: string) => `/products/update-product/${id}`,
-		DELETE_PRODUCT: (id: string) => `/products/delete-product/${id}`,
-	},
-	CATEGORIES: {
-		INDEX: '/products/categories',
-		CREATE_CATEGORY: '/products/create-category',
-		UPDATE_CATEGORY: (id: string) => `/products/update-category/${id}`,
-		DELETE_CATEGORY: (id: string) => `/products/delete-category/${id}`,
+	CUSTOMER_MANAGEMENT: {
+		GE_CUSTOMERS: '/customers',
+		GET_CUSTOMER_CART: (id: string) => `/customers/${id}/cart`,
+		DELETE_CUSTOMER: (id: string) => `/customers/${id}`,
 	},
 } as const

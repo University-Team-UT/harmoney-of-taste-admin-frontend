@@ -3,8 +3,8 @@ import { ru } from '@nuxt/ui/locale'
 useHead({
 	titleTemplate: titleChunk => {
 		return titleChunk
-			? `${titleChunk} - Green House Админ панель`
-			: 'Green House Админ панель'
+			? `${titleChunk} - Гармония вкуса Админ панель`
+			: 'Гармония вкуса Админ панель'
 	},
 	htmlAttrs: {
 		lang: 'ru',
