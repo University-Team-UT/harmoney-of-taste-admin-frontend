@@ -21,7 +21,7 @@ useHead({
 		class="bg-neutral-100"
 	>
 		<AuthProvider>
-			<NuxtLoadingIndicator color="green" />
+			<NuxtLoadingIndicator color="amber" />
 			<NuxtLayout>
 				<NuxtPage />
 			</NuxtLayout>

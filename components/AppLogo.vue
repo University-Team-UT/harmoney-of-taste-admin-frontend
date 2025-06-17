@@ -5,14 +5,14 @@ import { ROUTES } from '~/config/routes'
 <template>
 	<NuxtLink
 		:to="ROUTES.INDEX"
-		class="flex group items-center cursor-default p-2 text-green-700"
+		class="flex group items-center cursor-default p-2 text-amber-700"
 	>
-		<NuxtImg src="/logo_svg.svg" width="30" height="30" class="size-16" />
+		<NuxtImg src="/logo.png" width="190" height="190" class="size-16" />
 		<div
 			class="flex group-hover:translate-x-2 transition-transform duration-200"
 		>
 			<UIcon size="30" name="lucide:chevron-right" />
-			<h2 class="text-xl font-bold">Администратор</h2>
+			<h2 class="text-xl font-bold">Администрация</h2>
 		</div>
 	</NuxtLink>
 </template>

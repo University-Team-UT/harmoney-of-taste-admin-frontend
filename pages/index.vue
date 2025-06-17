@@ -8,30 +8,23 @@ import ContentBlock from '~/components/ContentBlock.vue'
 		<div class="grid-cols-4 mt-4 gap-10 items-center grid">
 			<ContentBlock
 				class="col-span-2"
-				title="Главная страница"
-				text="Поменять контент расположенный на главной странице"
-				link="/home"
-				image-src="/Change-Setting-3--Streamline-Milano.png"
-			/>
-			<ContentBlock
-				class="col-span-2"
-				title="События"
-				text="Добавить, изменить, удалить событие"
-				link="/events"
+				title="Пользователи"
+				text="Мониторинг пользователей"
+				link="/customers"
 				image-src="/Welcome-4--Streamline-Milano.png"
 			/>
 			<ContentBlock
 				class="col-span-2"
 				title="Меню"
 				text="Изменить меню"
-				link="/events"
+				link="/menu"
 				image-src="/Coffee-Tea-4--Streamline-Milano.png"
 			/>
 			<ContentBlock
-				class="col-span-2"
-				title="Администраторы"
-				text="Добавить нового администратора"
-				link="/administration"
+				class="col-span-4"
+				title="Заказы"
+				text="Отслеживание и манипуляции с заказами"
+				link="/orders"
 				image-src="/Security-3--Streamline-Milano.png"
 			/>
 		</div>

@@ -1,116 +1,36 @@
 <script lang="ts" setup>
 import * as z from 'zod'
-import type { FormSubmitEvent, TabsItem } from '@nuxt/ui'
+import type { FormSubmitEvent } from '@nuxt/ui'
 import { UButton } from '#components'
-import { NUTRITION } from '~/types/types'
-import { categoriesKey } from '~/lib/keys'
 import { productsService } from '~/api/products.service'
+import { ProductCategory } from '~/types/types'
 
 const schema = z.object({
-	name: z.object({
-		en: z.string(),
-		ru: z.string(),
-	}),
-	description: z.object({
-		en: z.string(),
-		ru: z.string(),
-	}),
-	price: z.object({
-		value: z.number(),
-		max: z.number(),
-	}),
-	volumes: z.object({
-		value: z.number(),
-		max: z.number(),
-	}),
-	categoryId: z.string(),
-	composition: z.string(),
-	nutrition: z.object({
-		calories: z.object({
-			value: z.number(),
-			max: z.number(),
-			title: z.enum([NUTRITION.CALORIES]),
-		}),
-		proteins: z.object({
-			value: z.number(),
-			max: z.number(),
-			title: z.enum([NUTRITION.PROTEINS]),
-		}),
-		fats: z.object({
-			value: z.number(),
-			max: z.number(),
-			title: z.enum([NUTRITION.FATS]),
-		}),
-		carbohydrates: z.object({
-			value: z.number(),
-			max: z.number(),
-			title: z.enum([NUTRITION.CARBS]),
-		}),
-	}),
+	title: z.string().min(1),
+	category: z.nativeEnum(ProductCategory),
+	volume: z.string().optional(),
+	imageUrl: z.string().min(1),
+	ingredients: z.string().optional(),
+	price: z.number().min(1),
 })
 
 type Schema = z.output<typeof schema>
 
-const emit = defineEmits<{
-	refresh: []
-}>()
-const categories = inject(categoriesKey)
+const emit = defineEmits<{ refresh: [] }>()
 
 const state = reactive<Schema>({
-	name: {
-		en: '',
-		ru: '',
-	},
-	description: {
-		en: '',
-		ru: '',
-	},
-	price: {
-		value: 0,
-		max: 0,
-	},
-	volumes: {
-		value: 0,
-		max: 0,
-	},
-	composition: '',
-	categoryId: '',
-	nutrition: {
-		calories: {
-			value: 0,
-			max: 0,
-			title: NUTRITION.CALORIES,
-		},
-		proteins: {
-			value: 0,
-			max: 0,
-			title: NUTRITION.PROTEINS,
-		},
-		fats: {
-			value: 0,
-			max: 0,
-			title: NUTRITION.FATS,
-		},
-		carbohydrates: {
-			value: 0,
-			max: 0,
-			title: NUTRITION.CARBS,
-		},
-	},
+	title: '',
+	category: ProductCategory.COFFEE,
+	volume: '',
+	imageUrl: '',
+	ingredients: '',
+	price: 0,
 })
 
 const currentImage = ref<string | null>(null)
-const createCompositionArray = (composition: string) => {
-	return composition.split(',').map(curr => curr.trim())
-}
 
 const { mutate: create } = useMutation({
-	mutationFn: (data: Schema) =>
-		productsService.createProduct({
-			...data,
-			composition: createCompositionArray(state.composition),
-			image: currentImage.value || '',
-		}),
+	mutationFn: (data: Schema) => productsService.createProduct(data),
 	onSuccess: () => {
 		toast.add({
 			title: 'Успех',
@@ -121,65 +41,45 @@ const { mutate: create } = useMutation({
 		isOpen.value = false
 	},
 	onError: error => {
-		toast.add({
-			title: 'Ошибка',
-			description: error.message,
-			color: 'error',
-		})
+		toast.add({ title: 'Ошибка', description: error.message, color: 'error' })
 	},
 })
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+
+function onSubmit(event: FormSubmitEvent<Schema>) {
 	create(event.data)
 }
-const createImage = (file: string | null) => {
-	if (!file) {
-		currentImage.value = null
-	}
+
+function createImage(file: string | null) {
 	currentImage.value = file
+	state.imageUrl = file || ''
 }
 
 const isOpen = ref<boolean>(false)
-
 const toast = useToast()
 
-const items = ref<TabsItem[]>([
-	{
-		label: 'Первый объем',
-		slot: 'value',
-	},
-	{
-		label: 'Второй объем',
-		slot: 'max',
-	},
-])
-
-const selectItems = categories!.value.map(curr => ({
-	label: curr.title.ru,
-	value: curr.id,
+const selectItems = Object.entries(ProductCategory).map(([key, value]) => ({
+	label: value,
+	value: value,
 }))
 </script>
 
 <template>
 	<UDrawer
 		v-model:open="isOpen"
-		:ui="{
-			content: 'w-118',
-		}"
+		:ui="{ content: 'w-118' }"
 		direction="right"
 		inset
-		:handle-only="true"
-		:handle="false"
-		title="Создать блок"
+		title="Создать продукт"
 	>
-		<slot />
-		<template #body>
+		<slot></slot>
+		<template #content>
 			<UForm
 				:schema="schema"
 				:state="state"
-				class="w-full flex gap-3 flex-col justify-start"
+				class="w-full flex flex-col gap-4"
 				@submit="onSubmit"
 			>
-				<div class="flex flex-col gap-3 overflow-auto">
+				<div class="flex flex-col gap-3">
 					<div
 						class="w-full px-2 flex items-center justify-center relative h-60"
 					>
@@ -187,7 +87,7 @@ const selectItems = categories!.value.map(curr => ({
 							<NuxtImg
 								v-if="currentImage"
 								:src="formatUrl(currentImage)"
-								alt="banner preview"
+								alt="image preview"
 								class="w-full h-full object-cover"
 							/>
 							<div
@@ -199,7 +99,6 @@ const selectItems = categories!.value.map(curr => ({
 								</h1>
 							</div>
 						</div>
-
 						<div
 							class="absolute inset-0 flex flex-col justify-center items-center z-20"
 						>
@@ -209,134 +108,37 @@ const selectItems = categories!.value.map(curr => ({
 							/>
 						</div>
 					</div>
-					<div class="flex gap-4 justify-between"></div>
-					<div class="flex flex-col">
-						<h2 class="my-2 font-semibold">Название</h2>
-						<UFormField label="русский" name="title.ru">
-							<UInput v-model="state.name.ru" class="w-full" />
-						</UFormField>
-						<UFormField label="английский" name="title.en">
-							<UInput v-model="state.name.en" class="w-full" />
-						</UFormField>
-					</div>
-					<div class="flex flex-col">
-						<h2 class="my-2 font-semibold">Описание</h2>
-						<UFormField label="русский" name="description.ru">
-							<UInput v-model="state.description.ru" class="w-full" />
-						</UFormField>
-						<UFormField label="английский" name="description.en">
-							<UInput v-model="state.description.en" class="w-full" />
-						</UFormField>
-					</div>
-					<UFormField
-						label="Состав"
-						description="Запишите состав отделяя элементы через запятую"
-						name="composition"
-					>
-						<UInput v-model="state.composition" class="w-full" />
-					</UFormField>
-					<div>
-						<h2 class="my-2 font-semibold">Категория</h2>
 
+					<UFormField label="Название" name="title">
+						<UInput v-model="state.title" class="w-full" />
+					</UFormField>
+
+					<UFormField label="Категория" name="category">
 						<USelect
-							v-model="state.categoryId"
-							placeholder="Выберите категорию"
+							v-model="state.category"
 							:items="selectItems"
+							placeholder="Выберите категорию"
 							class="w-full"
 						/>
-					</div>
-					<UTabs
-						:unmount-on-hide="false"
-						color="neutral"
-						variant="pill"
-						:items="items"
-						class="w-full"
-					>
-						<template #value>
-							<div class="flex justify-between gap-2">
-								<UFormField label="Цена" name="price.value">
-									<UInputNumber
-										v-model="state.price.value"
-										class="w-full"
-									/> </UFormField
-								><UFormField label="Объем" name="volume.value">
-									<UInputNumber v-model="state.volumes.value" class="w-full" />
-								</UFormField>
-							</div>
-							<h2 class="my-2 font-semibold">БЖУ</h2>
-							<div class="flex gap-2">
-								<UFormField label="Калории" name="nutrition.calories.value">
-									<UInputNumber
-										v-model="state.nutrition.calories.value"
-										class="w-full"
-									/> </UFormField
-								><UFormField label="Белки" name="nutrition.proteins.value">
-									<UInputNumber
-										v-model="state.nutrition.proteins.value"
-										class="w-full"
-									/>
-								</UFormField>
-								<UFormField label="Жиры" name="nutrition.fats.value">
-									<UInputNumber
-										v-model="state.nutrition.fats.value"
-										class="w-full"
-									/>
-								</UFormField>
-								<UFormField
-									label="Углеводы"
-									name="nutrition.carbohydrates.value"
-								>
-									<UInputNumber
-										v-model="state.nutrition.carbohydrates.value"
-										class="w-full"
-									/>
-								</UFormField>
-							</div>
-						</template>
-						<template #max
-							><div class="flex justify-between gap-2">
-								<UFormField label="Цена" name="price.max">
-									<UInputNumber
-										v-model="state.price.max"
-										class="w-full"
-									/> </UFormField
-								><UFormField label="Объем" name="volume.max">
-									<UInputNumber v-model="state.volumes.max" class="w-full" />
-								</UFormField>
-							</div>
-							<h2 class="my-2 font-semibold">БЖУ</h2>
-							<div class="flex gap-2">
-								<UFormField label="Калории" name="nutrition.calories.max">
-									<UInputNumber
-										v-model="state.nutrition.calories.max"
-										class="w-full"
-									/> </UFormField
-								><UFormField label="Белки" name="nutrition.proteins.max">
-									<UInputNumber
-										v-model="state.nutrition.proteins.max"
-										class="w-full"
-									/>
-								</UFormField>
-								<UFormField label="Жиры" name="nutrition.fats.max">
-									<UInputNumber
-										v-model="state.nutrition.fats.max"
-										class="w-full"
-									/>
-								</UFormField>
-								<UFormField label="Углеводы" name="nutrition.carbohydrates.max">
-									<UInputNumber
-										v-model="state.nutrition.carbohydrates.max"
-										class="w-full"
-									/>
-								</UFormField></div
-						></template>
-					</UTabs>
+					</UFormField>
+
+					<UFormField label="Цена" name="price">
+						<UInputNumber v-model="state.price" class="w-full" />
+					</UFormField>
+
+					<UFormField label="Объем" name="volume">
+						<UInput v-model="state.volume" class="w-full" />
+					</UFormField>
+
+					<UFormField label="Состав (через запятую)" name="ingredients">
+						<UInput v-model="state.ingredients" class="w-full" />
+					</UFormField>
 				</div>
-				<div class="flex justify-between my-auto gap-2">
-					<UButton type="submit" class="w-full"> Создать </UButton>
+
+				<div class="flex gap-2">
+					<UButton type="submit" class="w-full">Создать</UButton>
 				</div>
 			</UForm>
 		</template>
 	</UDrawer>
 </template>
-<style scoped></style>

@@ -1,4 +1,5 @@
 import type { DateValue } from '@internationalized/date'
+import type { ProductsDto } from '~/api/products.service'
 
 export interface User {
 	id: string
@@ -74,4 +75,38 @@ export enum NUTRITION {
 	PROTEINS = 'nutrition.proteins',
 	FATS = 'nutrition.fats',
 	CARBS = 'nutrition.carbs',
+}
+
+export enum ProductCategory {
+	FOOD = 'FOOD',
+	COFFEE = 'COFFEE',
+	COLD_DRINK = 'COLD_DRINK',
+	HOT_DRINK = 'HOT_DRINK',
+	DESSERT = 'DESSERT',
+}
+export interface Customer {
+	id: string
+	userId: string
+	userName: string
+}
+export enum OrderStatus {
+	NEW = 'NEW',
+	IN_PROGRESS = 'IN_PROGRESS',
+	COMPLETED = 'COMPLETED',
+	CANCELLED = 'CANCELLED',
+	READY = 'READY',
+}
+
+export interface Order {
+	id: string
+	createdAt: string
+	status: OrderStatus
+	totalPrice: number
+	user: User
+	userId: string
+	userName: string
+	items: {
+		product: ProductsDto
+		quantity: number
+	}[]
 }

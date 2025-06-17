@@ -21,7 +21,7 @@ const store = useAuthStore()
 const toast = useToast()
 
 const state = reactive<Partial<Schema>>({
-	email: store.email || '',
+	email: store.user.email || '',
 	password: '',
 	passwordRepeat: '',
 })
@@ -48,23 +48,6 @@ const { mutate } = useMutation({
 	},
 })
 
-const { mutate: deleteAcc } = useMutation({
-	mutationFn: (id: string) => AuthService.deleteById(id),
-	onSuccess: () => {
-		toast.add({
-			title: 'Успех',
-			description: 'Аккаунт успешно удален.',
-			color: 'success',
-		})
-	},
-	onError: error => {
-		toast.add({
-			title: 'Ошибка',
-			description: error.message,
-			color: 'error',
-		})
-	},
-})
 async function onSubmit(event: FormSubmitEvent<Schema>) {
 	mutate(event.data)
 }
@@ -82,7 +65,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				v-model="state.email"
 				placeholder="Введите электронную почту"
 				color="primary"
-				size="xl"
 				class="w-full"
 			/> </UFormField
 		>`
@@ -92,7 +74,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				v-model="state.password"
 				color="primary"
 				type="password"
-				size="xl"
 				placeholder="Введите пароль"
 				class="w-full"
 			/>
@@ -103,24 +84,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				v-model="state.passwordRepeat"
 				color="primary"
 				type="password"
-				size="xl"
 				placeholder="Повторите пароль"
 				class="w-full"
 			/>
 		</UFormField>
-		<div class="flex justify-between items-center">
-			<ApproveModal
-				title="Удаление аккаунта"
-				description="Вы уверены? Аккаунт восстановить невозможно"
-				:buttons-text="['Отменить', 'Удалить']"
-				@approve="() => deleteAcc(store.userId!)"
-			>
-				<UButton size="xl" class="self-end" color="error">
-					Удалить аккаунт
-				</UButton>
-			</ApproveModal>
-
-			<UButton size="xl" class="self-end" type="submit"> Подтвердить </UButton>
+		<div class="flex justify-end items-center">
+			<UButton class="self-end" type="submit"> Подтвердить </UButton>
 		</div>
 	</UForm>
 </template>

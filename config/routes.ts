@@ -2,9 +2,8 @@ export const ROUTES = {
 	INDEX: '/',
 	SECTIONS: {
 		MENU: '/menu',
-		HOME: '/home',
-		EVENTS: '/events',
-		ADMINISTRATORS: '/administration',
+		EVENTS: '/customers',
+		ADMINISTRATORS: '/orders',
 	},
 	AUTH: {
 		LOGIN: '/login',

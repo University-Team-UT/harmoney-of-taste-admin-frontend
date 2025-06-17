@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { TabsItem } from '@nuxt/ui'
 import { productsService } from '~/api/products.service'
+import CreateProduct from '~/components/CreateProduct.vue'
 import { API_ROUTES } from '~/config/apiRoutes'
 import { categoriesKey, productsRefreshKey } from '~/lib/keys'
 import type { IProduct, TextWithLangs } from '~/types/types'
 
-definePageMeta({
+useHead({
 	title: 'Меню',
 })
 
@@ -23,54 +24,12 @@ export interface TabsItemWithCategory extends TabsItem {
 
 const toast = useToast()
 
-const { configUrl } = useConfigUrl()
-const { data, refresh } = useAuthFetch<CategoryWithProducts[]>(
-	configUrl(API_ROUTES.CATEGORIES.INDEX)
-)
-const categories = ref<CategoryWithProducts[]>([])
-const items = ref<TabsItemWithCategory[]>([])
-
-provide(categoriesKey, categories)
-provide(productsRefreshKey, refresh)
-
-watch(
-	categories,
-	newCategories => {
-		items.value = newCategories.map(category => ({
-			category: category,
-			label: category.title.ru,
-			items: category.products as IProduct[],
-		}))
-	},
-	{ immediate: true }
-)
-
-watch(
-	data,
-	newData => {
-		categories.value = newData || []
-	},
-	{ immediate: true }
-)
-
-const { mutate: deleteCategory } = useMutation({
-	mutationFn: (categoryId: string) =>
-		productsService.deleteCategory(categoryId),
-	onSuccess: () => {
-		toast.add({
-			title: 'Категория удалена',
-			color: 'success',
-		})
-		refresh()
-	},
-	onError: error => {
-		toast.add({
-			title: 'Ошибка при удалении категории',
-			description: error.message,
-			color: 'success',
-		})
-	},
+const { data, fetch } = useQuery({
+	queryFn: () => productsService.getProducts(),
+	enabled: true,
 })
+
+provide(productsRefreshKey, fetch)
 </script>
 
 <template>
@@ -80,7 +39,28 @@ const { mutate: deleteCategory } = useMutation({
 		</div>
 		<USeparator class="my-2" />
 		<div class="flex gap-1">
-			<UTabs
+			<div class="grid grid-cols-6 gap-2">
+				<MenuCard
+					v-for="product in data?.data"
+					:key="product.id"
+					:item="product"
+				/>
+				<CreateProduct @refresh="fetch">
+					<div
+						class="w-3/4 py-4 bg-amber-50 min-h-30 items-center justify-center self-center flex flex-col gap-2 rounded-lx cursor-pointer hover:bg-amber-100 transition-colors"
+					>
+						<NuxtImg
+							width="160"
+							height="auto"
+							src="/Coffee-Tea-4--Streamline-Milano.png"
+						/>
+						<h2 class="text-lg text-center font-bold text-gree-950">
+							Добавить новый продукт в меню
+						</h2>
+					</div>
+				</CreateProduct>
+			</div>
+			<!-- 	<UTabs
 				v-if="items"
 				:items="items"
 				class="w-full relative"
@@ -144,7 +124,7 @@ const { mutate: deleteCategory } = useMutation({
 						</CreateProduct>
 					</div>
 				</template>
-			</UTabs>
+			</UTabs> -->
 		</div>
 	</div>
 </template>

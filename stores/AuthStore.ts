@@ -17,6 +17,8 @@ export const useAuthStore = defineStore('AuthStore', () => {
 	const accessToken = ref<string | null>(null)
 	const isLoading = ref<boolean>(true)
 
+	watch(user, () => console.log(user.value))
+
 	const isLoggedIn = computed(() => user.value.id !== null)
 
 	const userId = computed(() => user.value.id)
@@ -57,7 +59,7 @@ export const useAuthStore = defineStore('AuthStore', () => {
 		}
 	}
 	return {
-		email: user.value.email,
+		user,
 		userId,
 		isLoggedIn,
 		logout,

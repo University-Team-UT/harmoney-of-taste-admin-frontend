@@ -25,24 +25,13 @@ const { mutate: login, isLoading } = useMutation({
 		return AuthService.login(data.email, data.password)
 	},
 	onSuccess: data => {
-		if (data.emailData) {
-			console.log(data.emailData)
-
-			toast.add({
-				title: 'Успех',
-				description: data.emailData.message,
-				color: 'success',
-			})
-			router.push(ROUTES.AUTH.VERIFY)
-		} else {
-			toast.add({
-				title: 'Успех',
-				description: 'Вы успешно авторизовались',
-				color: 'success',
-			})
-			authStore.setAuthData(data.authData.user, data.authData.accessToken)
-			router.replace(ROUTES.INDEX)
-		}
+		toast.add({
+			title: 'Успех',
+			description: 'Вы успешно авторизовались',
+			color: 'success',
+		})
+		authStore.setAuthData(data.user, data.accessToken)
+		router.replace(ROUTES.INDEX)
 	},
 	onError: err => {
 		toast.add({

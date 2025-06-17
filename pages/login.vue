@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-definePageMeta({
+useHead({
 	title: 'Логин',
+})
+definePageMeta({
 	layout: 'auth',
 })
 </script>
