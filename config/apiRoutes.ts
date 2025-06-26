@@ -1,7 +1,7 @@
 export const API_ROUTES = {
-	HOST: 'http://harmoney-of-taste-backend-xw2ufl-fa7a2f-5-129-207-103.traefik.me',
+	HOST: 'http://harmoney-of-taste-backend-poh9xv-c71679-5-129-207-84.traefik.me',
 	BASE_URL:
-		'http://harmoney-of-taste-backend-xw2ufl-fa7a2f-5-129-207-103.traefik.me',
+		'http://harmoney-of-taste-backend-poh9xv-c71679-5-129-207-84.traefik.me',
 	MEDIA: '/media',
 	AUTH: {
 		LOGIN: '/auth/login-admin',

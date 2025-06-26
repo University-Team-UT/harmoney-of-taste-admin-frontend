@@ -2,7 +2,6 @@
 import type { TabsItem } from '@nuxt/ui'
 import { productsService } from '~/api/products.service'
 import CreateProduct from '~/components/CreateProduct.vue'
-import { API_ROUTES } from '~/config/apiRoutes'
 import { categoriesKey, productsRefreshKey } from '~/lib/keys'
 import type { IProduct, TextWithLangs } from '~/types/types'
 
@@ -21,8 +20,6 @@ export interface TabsItemWithCategory extends TabsItem {
 	category: CategoryWithProducts
 	items: IProduct[]
 }
-
-const toast = useToast()
 
 const { data, fetch } = useQuery({
 	queryFn: () => productsService.getProducts(),
